@@ -1,0 +1,24 @@
+{
+    "manifest_version": 3,
+    "name": "YTcomments",
+    "version": "2.0",
+    "description": "A simple extension that adds a button to the YouTube search page",
+    "permissions": [
+      "activeTab",
+      "tabs",
+      "storage",
+      "declarativeContent",
+      "scripting"
+    ],
+    "host_permissions": ["*://*.youtube.com/*"],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "web_accessible_resources": [
+      {
+        "resources": ["styles.css"],
+        "matches": ["*://*.youtube.com/*"]
+      }
+    ]
+}
+  
