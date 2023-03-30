@@ -1,18 +1,5 @@
 // Create the button element
 if (document.body) {
-  setTimeout(() => {
-    process();
-  }, 2500);
-
-  //fnDefineEvents();
-  //addText();
-} else {
-  document.addEventListener("DOMContentLoaded", process);
-  document.addEventListener("DOMContentLoaded", fnDefineEvents);
-}
-
-function process() {
-  //console.log(videoIds);
   var element = document.getElementById("eval_btn");
   if (element == null) {
     var btn = document.createElement("input");
@@ -22,17 +9,47 @@ function process() {
     str = "results?search_query";
 
     //Add an event listener to the button
-    /*if(window.location.toString().includes("results"))
-      {
-        button.addEventListener("click", function() {
-          alert("Show Positivity Percentage");
-        });
-      }*/
     console.log("Hello");
     var voicebtn = document.getElementById("voice-search-button");
     voicebtn.parentNode.appendChild(btn);
     // Add the button to the page
   }
+  //fnDefineEvents();
+
+  //Loading Div
+  var loadingEl = document.createElement("div");
+  loadingEl.id = "loading-overlay";
+  loadingEl.classList.add("loading","hidden");
+  loading_div2 = document.createElement("div");
+  loading_div2.className = "uil-ring-css";
+  loading_div2.style = 'transform:scale(0.79);';
+  loading_div3 = document.createElement("div");
+
+  loading_div2.appendChild(loading_div3);
+  loadingEl.appendChild(loading_div2);
+  loadingEl.appendChild(loading_div2);
+  document.body.appendChild(loadingEl);
+
+
+  document
+    .getElementById("eval_btn")
+    .addEventListener("click", function (event) {
+
+      let overlay = document.getElementById("loading-overlay");
+      if(overlay.classList.contains('hidden')){
+        overlay.classList.remove('hidden');
+      }
+    });
+  setTimeout(() => {
+    process_overall();
+  }, 2500);
+
+} else {
+  document.addEventListener("DOMContentLoaded", process);
+  document.addEventListener("DOMContentLoaded", fnDefineEvents);
+}
+
+function process_overall() {
 
   console.log("wait");
   var videoIds = [];
@@ -60,8 +77,12 @@ function process() {
 
     let json_data = [];
     async function processVideos() {
-      
+      let stop=false;
       for (let i = 0; i < videoIds.length; i++) {
+        if (window.location.href.indexOf("youtube.com/results") < 0) {
+          break;
+        }
+
         const videoId = videoIds[i];
         const isVideoInDB = await searchVideo(videoId);
         if (isVideoInDB.detail==0) {
@@ -106,25 +127,22 @@ function process() {
       console.log("Score to be shown for video:",videodata.predicted_score);
     }
    
+  async function removeLoading(){
+    let overlay = document.getElementById("loading-overlay");
+    if(overlay && !overlay.classList.contains('hidden')){
+        overlay.classList.add('hidden');
+      }
+    console.log("Loading can be removed");
+  }
   async function process()
   {  
     await processVideos();
+    await removeLoading();
     console.log(json_data);
   }
   process();
   console.log(videoIds);
 
-  fnDefineEvents();
-}
-
-function fnDefineEvents() {
-  // Add an event listener to the button
-
-  document
-    .getElementById("eval_btn")
-    .addEventListener("click", function (event) {
-      addText();
-    });
 }
 function addText() {
   var title = document.getElementsByClassName(
@@ -134,8 +152,4 @@ function addText() {
   for (let i = 0; i < title.length / 2; i++) {
     title[i * 2].innerHTML = title[i * 2].textContent + " Hello" + i.toString();
   }
-  //title=title+" "+ "Hello";
-  //document.getElementById("video-title").innerHTML=title;
 }
-
-//}

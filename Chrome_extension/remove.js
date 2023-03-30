@@ -12,4 +12,8 @@ function process(){
     if(element){
         element.remove()
     }
+    let overlay = document.getElementById("loading-overlay");
+    if(overlay && !overlay.classList.contains('hidden')){
+        overlay.classList.add('hidden');
+    }
 }
