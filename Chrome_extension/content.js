@@ -14,8 +14,6 @@ if (document.body) {
     voicebtn.parentNode.appendChild(btn);
     // Add the button to the page
   }
-  //fnDefineEvents();
-
   //Loading Div
   var loadingEl = document.createElement("div");
   loadingEl.id = "loading-overlay";
@@ -30,18 +28,30 @@ if (document.body) {
   loadingEl.appendChild(loading_div2);
   document.body.appendChild(loadingEl);
 
-
+  function EventHandler(){
+    let overlay = document.getElementById("loading-overlay");
+    if(overlay.classList.contains('hidden')){
+      overlay.classList.remove('hidden');
+    }
+  }
   document
     .getElementById("eval_btn")
-    .addEventListener("click", function (event) {
-
-      let overlay = document.getElementById("loading-overlay");
-      if(overlay.classList.contains('hidden')){
-        overlay.classList.remove('hidden');
+    .addEventListener("click", EventHandler);
+  setTimeout(() => {
+    process_overall(()=>{
+      if (window.location.href.indexOf("youtube.com/results") > -1) {
+        document
+        .getElementById("eval_btn")
+        .removeEventListener("click", EventHandler);
+        console.log("after computation");
+        document
+        .getElementById("eval_btn")
+        .addEventListener("click", function (event) {
+          console.log("inside callback");
+          
+        });
       }
     });
-  setTimeout(() => {
-    process_overall();
   }, 2500);
 
 } else {
@@ -49,7 +59,7 @@ if (document.body) {
   document.addEventListener("DOMContentLoaded", fnDefineEvents);
 }
 
-function process_overall() {
+function process_overall(callback) {
 
   console.log("wait");
   var videoIds = [];
@@ -85,7 +95,7 @@ function process_overall() {
 
         const videoId = videoIds[i];
         const isVideoInDB = await searchVideo(videoId);
-        if (isVideoInDB.detail==0) {
+        if (isVideoInDB==null) {
           console.log("Prediction start for Video",i);
           const prediction = await predictScore(videoId);
           console.log("Prediction end for Video",i);
@@ -123,6 +133,9 @@ function process_overall() {
       return data.predicted_score;
     }
     async function holdScore(videodata) {
+      if(videodata.hasOwnProperty('created_at')){
+        delete videodata['created_at'];
+      }
       json_data.push(videodata);
       console.log("Score to be shown for video:",videodata.predicted_score);
     }
@@ -131,18 +144,23 @@ function process_overall() {
     let overlay = document.getElementById("loading-overlay");
     if(overlay && !overlay.classList.contains('hidden')){
         overlay.classList.add('hidden');
-      }
-    console.log("Loading can be removed");
+        console.log("Loading can be removed");
+    }
   }
   async function process()
   {  
     await processVideos();
     await removeLoading();
     console.log(json_data);
+    
   }
-  process();
+  async function all()
+  {
+    await process();
+    await callback();
+  }
+  all();
   console.log(videoIds);
-
 }
 function addText() {
   var title = document.getElementsByClassName(
