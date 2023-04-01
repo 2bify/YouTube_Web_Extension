@@ -117,7 +117,6 @@ function process_overall(callback) {
     async function predictScore(videoId) {
       const response = await fetch(`http://localhost:8000/predict/${videoId}`);
       const data = await response.json();
-      await holdScore(data);
       return data;
     }
     
@@ -130,11 +129,18 @@ function process_overall(callback) {
         body: JSON.stringify(prediction)
       });
       const data = await response.json();
+      await holdScore(data);
       return data.predicted_score;
     }
     async function holdScore(videodata) {
       if(videodata.hasOwnProperty('created_at')){
         delete videodata['created_at'];
+      }
+      if(videodata.hasOwnProperty('no_of_comments')){
+        delete videodata['no_of_comments'];
+      }
+      if(videodata.hasOwnProperty('p_comments')){
+        delete videodata['p_comments'];
       }
       json_data.push(videodata);
       console.log("Score to be shown for video:",videodata.predicted_score);
