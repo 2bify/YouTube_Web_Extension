@@ -29,6 +29,9 @@ if (document.body) {
   document.body.appendChild(loadingEl);
 
   function EventHandler(){
+    var btn = document.getElementById("eval_btn");
+    btn.value = "Show";
+    btn.classList.add("show-btn");
     let overlay = document.getElementById("loading-overlay");
     if(overlay.classList.contains('hidden')){
       overlay.classList.remove('hidden');
@@ -46,9 +49,19 @@ if (document.body) {
         console.log("after computation");
         document
         .getElementById("eval_btn")
-        .addEventListener("click", function (event) {
-          console.log("inside callback");
-          
+        .addEventListener("click", function () {
+          var btn = document.getElementById("eval_btn");
+          if (btn.value == "Evaluate")
+          {
+            btn.value = "Show";
+            btn.classList.add("show-btn");
+          }
+          else{
+            console.log("inside callback");
+            showResults();
+            btn.disabled = true;
+            btn.classList.add("disabled-btn");
+          }
         });
       }
     });
@@ -59,6 +72,7 @@ if (document.body) {
   document.addEventListener("DOMContentLoaded", fnDefineEvents);
 }
 
+var json_data = [];
 function process_overall(callback) {
 
   console.log("wait");
@@ -85,7 +99,7 @@ function process_overall(callback) {
     videoIds.push(first11Chars);
   });
 
-    let json_data = [];
+
     async function processVideos() {
       let stop=false;
       for (let i = 0; i < videoIds.length; i++) {
@@ -168,12 +182,55 @@ function process_overall(callback) {
   all();
   console.log(videoIds);
 }
-function addText() {
-  var title = document.getElementsByClassName(
-    "yt-simple-endpoint style-scope ytd-video-renderer"
-  );
-  console.log(title.length);
-  for (let i = 0; i < title.length / 2; i++) {
-    title[i * 2].innerHTML = title[i * 2].textContent + " Hello" + i.toString();
-  }
+// function addText() {
+//   var title = document.getElementsByClassName(
+//     "yt-simple-endpoint style-scope ytd-video-renderer"
+//   );
+//   console.log(title.length);
+//   for (let i = 0; i < title.length / 2; i++) {
+//     title[i * 2].innerHTML = title[i * 2].textContent + " Hello" + i.toString();
+//   }
+// }
+
+function showResults() {
+  var first11Chars;
+  document.querySelectorAll("a#video-title").forEach((a,index) => {
+    var href = a.getAttribute("href");
+    var title = a.getAttribute("title");
+    if (href.includes("/watch")) {
+      videoId = href.split("v=")[1];
+      if (typeof videoId === "string") {
+        first11Chars = videoId.slice(0, 11);
+        //videoIds.push(first11Chars);
+      }
+    } else if (href.includes("/shorts")) {
+      videoId = href.split("shorts/")[1];
+      if (typeof videoId === "string") {
+        first11Chars = videoId.slice(0, 11);
+      }
+    }
+    var isMatch = json_data.find((obj) => obj.video_id === first11Chars);
+    if (isMatch)
+    {
+      // console.log("The video ID matches!");
+      // console.log(title);
+      // a.textContent = title + " VALUE = " + isMatch.predicted_score.toString();
+      
+      var channel=a.parentElement.parentElement.parentElement.parentElement.querySelector("div#channel-info")
+      if(channel.querySelector("div#show_val")){
+        channel.removeChild(channel.querySelector("div#show_val"));
+      }
+      var scoreDiv = document.createElement("div");
+      scoreDiv.id="show_val";
+      scoreDiv.textContent = " VALUE = " + isMatch.predicted_score.toString();
+      scoreDiv.style.display = "relative";
+      scoreDiv.style.float = "right";
+      scoreDiv.style.marginRight = "1px";
+      a.parentElement.parentElement.parentElement.parentElement.querySelector("div#channel-info").appendChild(scoreDiv);
+    }
+    else
+      console.log("The video ID does not match.");
+
+
+  });
 }

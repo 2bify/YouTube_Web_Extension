@@ -8,9 +8,12 @@ else
 }
 
 function process(){
-    var element = document.getElementById("eval_btn");
-    if(element){
-        element.remove()
+    var element1 = document.getElementById("eval_btn");
+    if(element1.value=="Show"){
+        element1.value="Evaluate";
+        element1.disabled=false;
+        element1.classList.remove("disabled-btn");
+        element1.classList.remove("show-btn");
     }
     var element2 = document.querySelectorAll("#show_val");
     for (var i = 0; i < element2.length; i++) {
@@ -18,9 +21,5 @@ function process(){
       {
         element2[i].remove();
       }
-    }
-    let overlay = document.getElementById("loading-overlay");
-    if(overlay && !overlay.classList.contains('hidden')){
-        overlay.classList.add('hidden');
     }
 }
