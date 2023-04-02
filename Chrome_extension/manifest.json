@@ -1,8 +1,14 @@
 {
     "manifest_version": 3,
-    "name": "YTcomments",
-    "version": "2.0",
-    "description": "A simple extension that adds a button to the YouTube search page",
+    "name": "2bify",
+    "version": "1.0",
+    "icons": {
+      "16": "./icons/logo_16.png",
+      "32": "./icons/logo_32.png",
+      "48": "./icons/logo_48.png",
+      "128": "./icons/logo_128.png"
+    },
+    "description": "A simple extension that predicts positivity of video based on comments",
     "permissions": [
       "activeTab",
       "tabs",

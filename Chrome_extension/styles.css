@@ -11,12 +11,15 @@
 #eval_btn[value="Show"] {
   background-color: #8bc34a;
   border-radius: 50px;
+  color:aliceblue;
 }
 
 /* Button animation and color when it gets disabled */
 #eval_btn[disabled] {
   animation: disable-btn 0.5s linear forwards;
-  background-color: #bdbdbd;
+  background-color: #b63535;
+  border-radius: 30px;
+  color:aliceblue;
 }
 
 /* Button animation keyframes */
@@ -27,7 +30,7 @@
   }
   to {
     transform: scale(0.9);
-    opacity: 0.7;
+    opacity: 0.8;
   }
 }
 

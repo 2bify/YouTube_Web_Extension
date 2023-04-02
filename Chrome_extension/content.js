@@ -210,6 +210,16 @@ function showResults() {
       }
     }
     var isMatch = json_data.find((obj) => obj.video_id === first11Chars);
+    var gradientArray = [];
+    var startColor = [255, 0, 0]; // red
+    var endColor = [0, 128, 0]; // green
+
+    for (var i = 0; i < 100; i++) {
+      var r = startColor[0] - i * ((startColor[0] - endColor[0]) / 100);
+      var g = startColor[1] - i * ((startColor[1] - endColor[1]) / 100);
+      var b = startColor[2] - i * ((startColor[2] - endColor[2]) / 100);
+      gradientArray.push(`rgb(${r}, ${g}, ${b})`);
+    }
     if (isMatch)
     {
       // console.log("The video ID matches!");
@@ -222,10 +232,21 @@ function showResults() {
       }
       var scoreDiv = document.createElement("div");
       scoreDiv.id="show_val";
-      scoreDiv.textContent = " VALUE = " + isMatch.predicted_score.toString();
-      scoreDiv.style.display = "relative";
-      scoreDiv.style.float = "right";
-      scoreDiv.style.marginRight = "1px";
+      if(isMatch.predicted_score==-1)
+      {
+        scoreDiv.textContent = "⚠️";
+        scoreDiv.style.fontSize = "16px";
+        scoreDiv.style.marginLeft = "20px";
+      }
+      else{
+        scoreDiv.textContent = isMatch.predicted_score.toString()+"% Positive";
+        scoreDiv.style.fontSize = "16px";
+        scoreDiv.style.fontWeight = "bold";
+        scoreDiv.style.textAlign = "right";
+        scoreDiv.style.marginLeft = "20px";
+        scoreDiv.style.color = gradientArray[isMatch.predicted_score];
+      }
+      
       a.parentElement.parentElement.parentElement.parentElement.querySelector("div#channel-info").appendChild(scoreDiv);
     }
     else
